@@ -1,0 +1,33 @@
+---
+steps:
+- name: gcr.io/cloud-builders/docker
+  args:
+  - build
+  - "-t"
+  - us.gcr.io/$PROJECT_ID/containerbuilder/sample
+  - "."
+- name: us.gcr.io/blackduck-public/scan-client/4.1.0
+  secretEnv:
+  - BD_HUB_PASSWORD
+  args:
+  - "--image"
+  - us.gcr.io/$PROJECT_ID/containerbuilder/sample
+  - "--username"
+  - jfisher
+  - "--project"
+  - gcr/containerbuilder/demo
+  - "--host"
+  - bizdevhub.blackducksoftware.com
+  - "--port"
+  - '443'
+  - "--scheme"
+  - https
+  - "--name"
+  - RamTestCodeLocation
+  - "--use-local"
+secrets:
+- kmsKeyName: projects/eng-dev/locations/global/keyRings/hubCredentialsKeyRing/cryptoKeys/hubCredentialsCryptoKey
+  secretEnv:
+    BD_HUB_PASSWORD: CiQASU9vrwsGNuq0kDvb8YeOgZR9fDA7lALtzFOMyg2kIs5og5gSMwACoRK7D6dg5vncTAoUMYXgYXHVKc6JX+u+nOFpoFzWTK13VXcrHgGrr4c/ONcSE/VCww==
+images:
+- us.gcr.io/$PROJECT_ID/containerbuilder/sample
